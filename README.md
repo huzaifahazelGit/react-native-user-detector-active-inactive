@@ -1,9 +1,20 @@
 <h1 align="center">react-native-user-detector-active-inactive</h1>
 
-> A React Native component that notifies if the user is active behaviour or not (i.e. when the app surface hasn't been touched for more than a certain amount of second ).You may customize to set the time anagist different screen when app is active or inactive, Also You may customize the changing of screen routing when app surface hasn't been touched ( Inactive behaviour) after complete duration of timeForInactivity.
+<div align="center">
 
-As of version 0.0.3, `react-native-user-detector-active-inactive` customize the function props with (onHandleActiveInactive) for setting the screen routing (navigation) when app surface is active or inactive behaviour with function props (onHandleActiveInactive) and
+![npm version](https://img.shields.io/badge/version-0.0.5-blue.svg?cacheSeconds=2592000)
+[![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://github.com/huzaifahazelGit/react-native-user-detector-active-inactive)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/huzaifahazelGit/react-native-user-detector-active-inactive/pulse)
+[![code issues](https://img.shields.io/badge/Issues%3F-yes-red.svg)](https://github.com/huzaifahazelGit/react-native-user-detector-active-inactive/issues)
+
+</div>
+
+> A React Native component that notifies if the user/screen is active behaviour or not (i.e. when the app surface hasn't been touched for more than a certain amount of second ).You may customize to set the time anagist different screen when app is active or inactive, Also You may customize the changing of screen routing when app surface hasn't been touched ( Inactive behaviour) after complete duration of timeForInactivity. Timer will be reset when navigate screen and layout or component change then timer re-initialized from zero ,
+> Also then timer will to be reset & timer will be stopped when keyboard appears
+
+As of version 0.0.5, `react-native-user-detector-active-inactive` customize the function props with (onHandleActiveInactive) for setting the screen routing (navigation) when app-surface is active or inactive behaviour with function props (onHandleActiveInactive) and
 Also may able to check console when props (console flag) will be keep to true.
+Also resets the timer & timer will be stopped or not when the keyboard appears or disappears.If skipKeyboard property set to true, then timer will be stopped and app-surface will not move to In-active behaviour
 
 # Install
 
@@ -41,8 +52,8 @@ The signature of the `UserInactivity` React props is the following:
 interface UserInactivityProps<T = unknown> {
   /**
    * get current screen for route name when screen or layout  is rendering (change)
-   */
-  currentScreen?: any;
+   * if it is not used than timer will not to be reset when navigate another screen   */
+  currentScreen?: string;
   /**
    * Number of seconds after which the view is considered inactive beahviour.
    * If it changed, the timer restarts and the view is considered active until
@@ -53,7 +64,7 @@ interface UserInactivityProps<T = unknown> {
 
   /**
    * Children components to embed inside UserInactivity's View.
-   * If any children component is pressed, `onAction` is called after
+   * If any children component is pressed,    `onHandleActiveInactive` is called after
    * `timeForInactivity` seconds. not millisecond
    */
 
@@ -74,7 +85,7 @@ interface UserInactivityProps<T = unknown> {
   style?: StyleProp<ViewStyle>;
   /**
    * If it's explicitly set to `true` than you may check to console when timer running,
-   * It defaults to true for ease of checking time  when set to props  .
+   *  It defaults to false  when set to props than not showing timer in console   .
    */
 
   consoleTimer?: boolean;
@@ -100,6 +111,7 @@ interface UserInactivityProps<T = unknown> {
   /**
    * you may customize the screen routing (navigation) when app surface is active  or inactive behaviour  with function creating
    * you may create multiple condition if-else in handleActiveInactive function
+   * customization setting for screen routing when app-surface is active or in-active beahviour
    */
   onHandleActiveInactive: () => void;
 }
@@ -125,36 +137,32 @@ export default () => {
   };
   return (
        <UserInactivity
-          currentScreen={currentRoute}
+          currentScreen={currentRoute} // get screen name, if used than timer will to to be reset when navigating screen otherwise not to reset
           timeForInactivity={10}  // means 10 second
-          onHandleActiveInactive={handleActiveInactive}
-          consoleTimer={true}
+          onHandleActiveInactive={handleActiveInactive} // customization setting for navigating screen routing when app-surface is active or in-active beahviour
+          consoleTimer={true} // To check the timer in console
+          // style={{flex:1}}   // customize style
         >
   );
 }
 
 ```
 
+Also, please checkout the [example on Snack/Expo](https://snack.expo.dev/@huzaifa1998/react-native-user-detector-active-inactive).
+
 ## 💪 Practical Example 1 (Explaination)
 
 ```tsx
-import { Provider, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
-import { darkThemeStyle, defaultTheme } from "@theme";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-// import SplashScreen from "react-native-splash-screen";
 import UserInactivity from "react-native-user-detector-active-inactive";
+
 const App = () => {
-  let appTheme = isEnabledOne ? darkThemeStyle : defaultTheme;
   const [currentRoute, setCurrentRoute] = useState("");
   let timeForInactivity;
 
-  // useEffect(() => {
-  //   SplashScreen.hide();
-  // }, []);
-
- // customize different timeForInactivity angainst multiple screen
+ // customize to set different timeForInactivity angainst multiple screen when app-surface is active or in-active behaviour
   currentRoute == "ClerkId" ||
   currentRoute == "InvoiceNumber" ||
     ? (timeForInactivity = 10)
@@ -162,21 +170,17 @@ const App = () => {
   currentRoute == "TipDoller" && (timeForInactivity = 10);
   currentRoute == "TapProcess" && (timeForInactivity = 20);
 
+  // get current screen for route Name
   const onStateChange = (state: any) => {
     setCurrentRoute(state?.routes[state.index]?.name);
   };
 
   const handleActiveInactive = () => {
-    // customization according screen routing
+    //  customization setting for navigating screen routing when app-surface is active or in-active beahviour
     if (
       currentRoute == "ClerkId" ||
       currentRoute == "InvoiceNumber" ||
-      currentRoute == "Merchant_Cart" ||
-      currentRoute == "EnterAmount" ||
-      currentRoute == "TipDoller" ||
-      currentRoute == "TapProcess" ||
-      currentRoute == "SelectAccount" ||
-      currentRoute == "Tap_Merchant_Cart"
+      currentRoute == "Merchant_Cart"
     ) {
       // navigation.navigate("TransactionMenu")
       navigate("TransactionMenu");
@@ -186,29 +190,25 @@ const App = () => {
   };
 
   return (
-    <Provider store={store}>
-      <SafeAreaProvider>
-        <CustomLoader />
         <UserInactivity
-          currentScreen={currentRoute}
-          timeForInactivity={timeForInactivity}
-          onHandleActiveInactive={handleActiveInactive}
-          skipKeyboard={false}
-          consoleTimer={true}
-          consoleTouchScreen={true}
-          consoleComponentChange={true}
-          consoleLongPress={true}
+          currentScreen={currentRoute} // get screen name if not used than timer will not to be reset
+          timeForInactivity={timeForInactivity} // time in  second
+          onHandleActiveInactive={handleActiveInactive} // customization setting for navigating screen routing when app-surface is active or in-active beahviour
+          skipKeyboard={false} //  If set to true, then timer will be stopped and app will not move to In-active behaviour
+          consoleTimer={true} //  To check the timer in console
+          consoleTouchScreen={true} //  To check the detection when screen touchable in console
+          consoleComponentChange={true} //  To check the component or layout  when change in console
+          consoleLongPress={true} //  To check the detection when long pressing at screen touchable in console
+          // style={{flex:1}}   // customize style
         >
           <NavigationContainer
             theme={appTheme as any}
             ref={navigationRef}
-            onStateChange={onStateChange}
+            onStateChange={onStateChange} // get actual data about navigation screen route
           >
             <Routes />
           </NavigationContainer>
         </UserInactivity>
-      </SafeAreaProvider>
-    </Provider>
   );
 };
 export default App;
@@ -232,11 +232,50 @@ export const getCurrentRoute = () => {
 };
 ```
 
+## 💪 Example 2
+
+```tsx
+import React from "react";
+import UserInactivity from "react-native-user-detector-active-inactive";
+import { useRoute } from "@react-navigation/native";
+function BaseScreen(props) {
+  const route = useRoute();
+  const screenName = route.name; // get current screen name for route navigation
+  const handleActiveInactive = () => {
+    props.navigation.navigate("Home");
+  };
+
+  return (
+    <UserInactivity
+      style={props.style}
+      timeForInactivity={props.timer}
+      currentScreen={screenName} // add this line for getting the screen route name
+      onHandleActiveInactive={handleActiveInactive}
+      consoleTimer={true}
+    >
+      {props.children}
+    </UserInactivity>
+  );
+}
+
+export default BaseScreen;
+```
+
+## 💪 Method to Get current route screen name for naviagtion in any screen
+
+```sh
+   import { useRoute } from '@react-navigation/native';
+   // below this lines used inside function
+   const route = useRoute();
+   const screenName = route.name;
+```
+
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/huzaifahazelGit/react-native-user-detector-active-inactive).
 The code is short, throughly commented and well tested, so you should feel quite comfortable working on it.
-If you have any doubt or suggestion, please open an issue.
+
+- If you have any doubt or suggestion, please open an issue or contact me via email (huzaifajunaid.hazel@gmail.com)
 
 ## 🦄 Show your support
 
@@ -251,4 +290,4 @@ Give a ⭐️ if this project helped or inspired you!
 
 ## 🚀 Demo Related Package
 
-- comming soon
+- please checkout the [example on Snack/Expo](https://snack.expo.dev/@huzaifa1998/react-native-user-detector-active-inactive).
