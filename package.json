@@ -1,0 +1,39 @@
+{
+  "name": "react-native-user-detector-active-inactive",
+  "version": "0.0.8",
+  "description": "React Native component that notifies if the user is active state or inactive sate   (i.e. when the app surface hasn't been touched for more than a certain amount of second than it will be move to Inactive State means Inactive Screen).",
+  "main": "src/index.js",
+  "files": [
+    "index.js",
+    "src/"
+  ],
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huzaifahazelGit/react-native-user-detector-active-inactive"
+  },
+  "keywords": [
+    "react-native",
+    "user",
+    "typescript",
+    "track",
+    "monitor",
+    "detect",
+    "touchable",
+    "active",
+    "inactive",
+    "screen",
+    "inactivity"
+  ],
+  "publicConfig": {
+    "@huzaifahazelGit:registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/huzaifahazelGit/react-native-user-detector-active-inactive/issues"
+  },
+  "author": "Muhammad Huzaifa junaid (https://github.com/huzaifahazelGit)",
+  "license": "MIT"
+}
